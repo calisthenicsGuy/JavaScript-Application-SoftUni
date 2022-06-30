@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" /> <button id="add-phone">Add</button>
+    </br>
+    <button id="phonebook-data-btn">Get Phone Book</button>
+    <ul id="phonebook-result">
+
+    </ul>
+
+    <script>
+        let phonebookButtonElement = document.querySelector('#phonebook-data-btn');
+        let phonebookListElement = document.querySelector('#phonebook-result');
+        let baseUrl = 'http://localhost:3030/jsonstore/';
+
+        let addPhoneInputElement = document.querySelector('input[type="text"]');
+        let addPhoneButtonElement = document.getElementById('add-phone');
+
+        phonebookButtonElement.addEventListener('click', (e) => {
+            fetch(`${baseUrl}phonebook`)
+                .then(resolve => resolve.json())
+                .then(data => {
+                    phonebookListElement.innerHTML = '';
+                    Object.values(data).forEach(x => {
+                        let singlePersonElement = document.createElement('li');
+                        singlePersonElement.textContent = x.person;
+                        phonebookListElement.appendChild(singlePersonElement);
+                    })
+                })
+        });
+
+        addPhoneButtonElement.addEventListener('click', (e) => {
+            let person = addPhoneInputElement.value;
+
+            fetch(`${baseUrl}phonebook`, {
+                method : 'POST',
+                headers : {
+                    'content-type' : 'application/json'
+                },
+                body : JSON.stringify({person})
+            })
+            .then(res => res.json())
+            .then(p => p.person)
+            .then ( name => {
+                let singlePersonElement = document.createElement('li');
+                singlePersonElement.textContent = name;
+                phonebookListElement.appendChild(singlePersonElement);
+            })
+        });
+
+
+
+    </script>
+</body>
+</html>
